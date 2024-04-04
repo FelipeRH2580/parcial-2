@@ -1,0 +1,120 @@
+#include <iostream>
+#include <stack>
+#include <queue>
+
+using namespace std;
+
+// Definición de la estructura de un nodo para el árbol
+struct TreeNode {
+    int data;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int val) : data(val), left(nullptr), right(nullptr) {}
+};
+
+// Definición de la estructura de un nodo para la lista circular
+struct ListNode {
+    int data;
+    ListNode* next;
+    explicit ListNode(int val) : data(val), next(nullptr) {}
+};
+
+// Función para crear un árbol binario a partir de una pila
+TreeNode* createTreeFromStack(stack<int>& stk) {
+    if (stk.empty()) return nullptr;
+
+    TreeNode* root = new TreeNode(stk.top());
+    stk.pop();
+
+    root->right = createTreeFromStack(stk);
+    root->left = createTreeFromStack(stk);
+
+    return root;
+}
+
+// Función para crear una lista circular a partir de una cola
+ListNode* createCircularListFromQueue(queue<int>& q) {
+    if (q.empty()) return nullptr;
+
+    ListNode* head = new ListNode(q.front());
+    q.pop();
+
+    ListNode* current = head;
+
+    while (!q.empty()) {
+        current->next = new ListNode(q.front());
+        q.pop();
+        current = current->next;
+    }
+
+    current->next = head; // Hacer la lista circular
+
+    return head;
+}
+
+// Función para imprimir los elementos de la lista doblemente enlazada circular
+void printList(ListNode* head) {
+    if (head == nullptr) {
+        return;
+    }
+    ListNode* current = head;
+    do {
+        cout << current->data << " ";
+        current = current->next;
+    } while (current != head);
+    cout << endl;
+}
+
+
+// Función para imprimir los elementos de un árbol binario de búsqueda en orden
+void inorderTraversal(TreeNode* root) {
+    if (root != nullptr) {
+        inorderTraversal(root->left);
+        cout << root->data << " ";
+        inorderTraversal(root->right);
+    }
+}
+
+
+int main() {
+    char choice;
+    cout << "Seleccione 'p' para pila o 'c' para cola: ";
+    cin >> choice;
+
+    if (choice == 'p') {
+        stack<int> stk;
+        int num;
+        cout << "Ingrese elementos para la pila (-99999 para terminar): ";
+        while (cin >> num && num !=-99999 ) {
+            stk.push(num);
+        }
+
+        // Crear árbol a partir de la pila
+        TreeNode* TreeRoot = createTreeFromStack(stk);
+
+        cout << "Elementos del árbol binario de búsqueda (en orden):" << endl;
+        // Imprimir elementos del árbol binario de búsqueda
+        inorderTraversal(TreeRoot);
+        cout << endl;
+        
+    } else if (choice == 'c') {
+        queue<int> q;
+        int num;
+        cout << "Ingrese elementos para la pila (-99999 para terminar): ";
+        while (cin >> num && num !=-99999 ) {            q.push(num);
+        }
+
+        // Crear lista circular a partir de la cola
+        ListNode* circularListHead = createCircularListFromQueue(q);
+
+        cout << "Elementos del árbol binario de búsqueda (en orden):" << endl;
+            // Imprimir elementos de la lista doblemente enlazada circular
+            printList(circularListHead);
+        
+            }else 
+            {
+                cout<<"Opcion no valida."<<endl;
+            }
+
+    return 0;
+}
